@@ -379,164 +379,57 @@ function animateParticles() {
   requestAnimationFrame(animateParticles);
 }
 //Efecto de confeti
-class Confetti {
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  particles: ConfettiParticle[] = [];
-  animationInterval: number | undefined;
+let confettiParticles: ConfettiParticle[] = [];
+const numberOfConfettiParticles = 200;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.context = canvas.getContext("2d")!;
-  }
-
-  init() {
-    for (let i = 0; i < 100; i++) {
-      this.createRandomParticle();
-    }
-  }
-
-  createRandomParticle() {
-    const size = Math.random() * 5 + 5;
-    const x = Math.random() * this.canvas.width;
-    const y = Math.random() * this.canvas.height;
-    const color = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${
-      Math.random() * 255
-    })`;
-    const speedX = (Math.random() - 0.5) * 5;
-    const speedY = Math.random() * 3 + 2; // Vertical speed
-
-    const particle = new ConfettiParticle(x, y, color, size, speedX, speedY);
-    this.particles.push(particle);
-  }
-
-  animate() {
-    this.animationInterval = setInterval(() => {
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.updateAndDrawParticles();
-      this.resetOutOfBoundsParticles();
-    }, 30);
-  }
-
-  updateAndDrawParticles() {
-    this.particles.forEach((particle) => {
-      particle.update();
-      particle.draw(this.context);
-    });
-  }
-
-  resetOutOfBoundsParticles() {
-    this.particles.forEach((particle) => {
-      if (particle.isOutOfBounds(this.canvas.width, this.canvas.height)) {
-        particle.resetPosition(this.canvas.width, this.canvas.height);
-      }
-    });
-  }
-
-  start() {
-    if (!this.animationInterval) {
-      this.init();
-      this.animate();
-    }
-  }
-
-  stop() {
-    if (this.animationInterval) {
-      clearInterval(this.animationInterval);
-      this.animationInterval = undefined;
-    }
+function initConfetti() {
+  for (let i = 0; i < numberOfConfettiParticles; i++) {
+    confettiParticles.push(createRandomConfettiParticle());
   }
 }
 
-// Función que encapsula la inicialización y la animación del confeti
-function confeti() {
-  // Obtener el elemento canvas del DOM
-  const canvas = document.getElementById(
-    "confetti-canvas"
-  ) as HTMLCanvasElement;
+function createRandomConfettiParticle() {
+  const x = Math.random() * pantalla2.canvas.width;
+  const y = Math.random() * pantalla2.canvas.height;
+  const color = getRandomColor();
+  const size = Math.random() * 10 + 5;
+  const speedX = Math.random() * 4 - 2; // Velocidad horizontal aleatoria
+  const speedY = Math.random() * 4 + 1; // Velocidad vertical aleatoria
 
-  // Crear una instancia de la clase Confetti
-  const confettiInstance = new Confetti(canvas);
-
-  // Iniciar el efecto de confeti
-  confettiInstance.start();
+  return new ConfettiParticle(x, y, color, size, speedX, speedY);
 }
-//Efecto de estrella
-class StarField {
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  particles: StarParticle[] = [];
-  animationInterval: number | undefined;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.context = canvas.getContext("2d")!;
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
   }
+  return color;
+}
 
-  init() {
-    document
-      .getElementById("op-estrella")
-      .addEventListener("click", this.createStarField.bind(this));
-  }
+function animateConfetti() {
+  pantalla2.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
 
-  createStarField() {
-    this.particles = [];
-    for (let i = 0; i < 100; i++) {
-      const size = Math.random() * 2 + 1;
-      const x = Math.random() * this.canvas.width;
-      const y = Math.random() * this.canvas.height;
-      const brightness = Math.random();
+  // Dibuja la imagen original
+  pantalla2.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
 
-      const particle = new StarParticle(x, y, size, brightness);
-      this.particles.push(particle);
+  for (let i = 0; i < confettiParticles.length; i++) {
+    const confettiParticle = confettiParticles[i];
+    confettiParticle.update();
+    confettiParticle.draw(pantalla2);
+
+    if (confettiParticle.isOutOfBounds(pantalla2.canvas.width, pantalla2.canvas.height)) {
+      confettiParticle.resetPosition(pantalla2.canvas.width, pantalla2.canvas.height);
     }
   }
 
-  animate() {
-    this.animationInterval = setInterval(() => {
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.drawStars();
-    }, 30);
-  }
-
-  drawStars() {
-    this.particles.forEach((particle) => {
-      particle.draw(this.context);
-    });
-  }
-
-  start() {
-    if (!this.animationInterval) {
-      this.init();
-      this.animate();
-    }
-  }
-
-  stop() {
-    if (this.animationInterval) {
-      clearInterval(this.animationInterval);
-      this.animationInterval = undefined;
-    }
-  }
+  requestAnimationFrame(animateConfetti);
 }
-
-// Función que encapsula la inicialización y la animación del efecto de estrellas
-function estrella() {
-  // Obtener el elemento canvas del DOM
-  const canvas = document.getElementById(
-    "estrella-canvas"
-  ) as HTMLCanvasElement;
-
-  // Crear una instancia de la clase StarField
-  const starFieldInstance = new StarField(canvas);
-
-  // Iniciar el efecto de estrellas
-  starFieldInstance.start();
+function Confetti() {
+  initConfetti();
+  animateConfetti();
 }
-
-// Llamar a la función de inicialización del efecto de estrellas
-estrella();
-
 //seccion de histogramas
 function histogramas(evt: any): void {
   const imagenSal: ImageType = new ImageType(pantalla1, imgLocal.getImage());
@@ -789,10 +682,6 @@ document
 //op con efectos
 document.getElementById("op-rain").addEventListener("click", rain, false);
 document.getElementById("op-rain2").addEventListener("click", rain2, false);
-document.getElementById("op-confeti").addEventListener("click", confeti, false);
-document
-  .getElementById("op-estrella")
-  .addEventListener("click", estrella, false);
 
 //op con texto.
 document.getElementById("op-text").addEventListener("click", textEfects, false);
@@ -843,3 +732,7 @@ document
   .getElementById("op-shearingY")
   .addEventListener("click", shearingY, false);
 document.getElementById("op-afin").addEventListener("click", tAfin, false);
+
+///para proyecto 
+
+document.getElementById("Confetti").addEventListener('click', Confetti, false);
