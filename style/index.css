@@ -22,7 +22,7 @@ ul{
   list-style: none;
 }
 .nav li span{
-  background-color: black;
+  background-color: blue;
   color: white;
   text-decoration: none;
   padding: 10px 15px;
