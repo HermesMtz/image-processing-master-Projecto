@@ -350,6 +350,21 @@ function startStars() {
     initSuspendedStarsEffect();
     animateSuspendedStarsEffect();
 }
+//efecto opacidad 
+var opacity = 1; // Inicializa la opacidad en 1 (completamente visible)
+function animateOpacity() {
+    ctx.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    ctx.globalAlpha = opacity; // Configura la opacidad global
+    ctx.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    opacity -= 0.01; // Disminuye la opacidad en cada fotograma
+    if (opacity > 0) {
+        requestAnimationFrame(animateOpacity);
+    }
+}
+function startOpacityAnimation() {
+    opacity = 1; // Reinicia la opacidad al valor inicial
+    animateOpacity();
+}
 //seccion de histogramas
 function histogramas(evt) {
     var imagenSal = new ImageType(pantalla1, imgLocal.getImage());
@@ -598,3 +613,4 @@ document.getElementById("op-afin").addEventListener("click", tAfin, false);
 ///para proyecto 
 document.getElementById("Confetti").addEventListener('click', Confetti, false);
 document.getElementById("Stars").addEventListener('click', startStars, false);
+document.getElementById("startOpacityAnimation").addEventListener('click', startOpacityAnimation, false);
