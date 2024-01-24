@@ -5,7 +5,7 @@ import { Particle } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from "./canvasLocal.js";
 import { ConfettiParticle } from "./particle.js";
-import { SuspendedStars, RescalingEffect} from "./particle.js";
+import { SuspendedStars, RescalingEffect, RotationEffect} from "./particle.js";
 
 let lienzo1: HTMLCanvasElement;
 let lienzo2: HTMLCanvasElement;
@@ -494,6 +494,28 @@ function Reescalado() {
 }
 
 
+// ventana infinita 
+
+let rotationEffect: RotationEffect;
+
+function initRotationEffect() {
+  rotationEffect = new RotationEffect(ctx);
+}
+
+function animateRotationEffect() {
+  const img = imgLocal.getImage();
+  rotationEffect.update();
+  rotationEffect.draw(img);
+
+  requestAnimationFrame(animateRotationEffect);
+}
+
+function Rotacion() {
+  initRotationEffect();
+  animateRotationEffect();
+}
+
+
 //seccion de histogramas
 function histogramas(evt: any): void {
   const imagenSal: ImageType = new ImageType(pantalla1, imgLocal.getImage());
@@ -803,3 +825,4 @@ document.getElementById("Confetti").addEventListener('click', Confetti, false);
 document.getElementById("Stars").addEventListener('click', startStars, false);
 document.getElementById("opacidad").addEventListener('click', opacidad, false);
 document.getElementById("Reescalado").addEventListener('click', Reescalado, false);
+document.getElementById("Rotacion").addEventListener('click', Rotacion, false);

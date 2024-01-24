@@ -180,3 +180,28 @@ var RescalingEffect = /** @class */ (function () {
     return RescalingEffect;
 }());
 export { RescalingEffect };
+// Rotacion animada
+var RotationEffect = /** @class */ (function () {
+    function RotationEffect(ctx) {
+        this.angle = 0;
+        this.ctx = ctx;
+    }
+    RotationEffect.prototype.update = function () {
+        // Cambia el ángulo de rotación de forma continua (puedes ajustar la velocidad)
+        this.angle += 0.02;
+    };
+    RotationEffect.prototype.draw = function (img) {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.save();
+        // Mueve el origen al centro de la imagen
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        // Rota la imagen
+        this.ctx.rotate(this.angle);
+        // Dibuja la imagen rotada
+        this.ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        // Restaura el estado del contexto
+        this.ctx.restore();
+    };
+    return RotationEffect;
+}());
+export { RotationEffect };
