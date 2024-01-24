@@ -5,7 +5,7 @@ import { Particle } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from "./canvasLocal.js";
 import { ConfettiParticle } from "./particle.js";
-import { SuspendedStars } from "./particle.js";
+import { SuspendedStars, RescalingEffect} from "./particle.js";
 
 let lienzo1: HTMLCanvasElement;
 let lienzo2: HTMLCanvasElement;
@@ -466,10 +466,33 @@ function animateOpacity() {
   }
 }
 
-function startOpacityAnimation() {
+function opacidad() {
   opacity = 1; // Reinicia la opacidad al valor inicial
   animateOpacity();
 }
+
+
+// efecto de rescalado
+
+let rescalingEffect: RescalingEffect;
+
+function initRescalingEffect() {
+  rescalingEffect = new RescalingEffect(ctx);
+}
+
+function animateRescalingEffect() {
+  const img = imgLocal.getImage();
+  rescalingEffect.update();
+  rescalingEffect.draw(img);
+
+  requestAnimationFrame(animateRescalingEffect);
+}
+
+function Reescalado() {
+  initRescalingEffect();
+  animateRescalingEffect();
+}
+
 
 //seccion de histogramas
 function histogramas(evt: any): void {
@@ -778,4 +801,5 @@ document.getElementById("op-afin").addEventListener("click", tAfin, false);
 
 document.getElementById("Confetti").addEventListener('click', Confetti, false);
 document.getElementById("Stars").addEventListener('click', startStars, false);
-document.getElementById("startOpacityAnimation").addEventListener('click', startOpacityAnimation, false);
+document.getElementById("opacidad").addEventListener('click', opacidad, false);
+document.getElementById("Reescalado").addEventListener('click', Reescalado, false);

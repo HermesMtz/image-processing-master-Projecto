@@ -159,3 +159,24 @@ var SuspendedStars = /** @class */ (function () {
     return SuspendedStars;
 }());
 export { SuspendedStars };
+// PARA EFECTO DE RESCALADO 
+var RescalingEffect = /** @class */ (function () {
+    function RescalingEffect(ctx) {
+        this.scale = 1;
+        this.ctx = ctx;
+    }
+    RescalingEffect.prototype.update = function () {
+        // Cambia el factor de escala de forma continua (puedes ajustar la velocidad)
+        this.scale += 0.01;
+        // Reinicia la escala a 1 cuando alcanza un límite (puedes ajustar el límite)
+        if (this.scale > 2) {
+            this.scale = 1;
+        }
+    };
+    RescalingEffect.prototype.draw = function (img) {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.drawImage(img, 0, 0, this.ctx.canvas.width * this.scale, this.ctx.canvas.height * this.scale);
+    };
+    return RescalingEffect;
+}());
+export { RescalingEffect };
