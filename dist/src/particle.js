@@ -205,3 +205,45 @@ var RotationEffect = /** @class */ (function () {
     return RotationEffect;
 }());
 export { RotationEffect };
+///efecto psicodelico
+var PsychedelicEffect = /** @class */ (function () {
+    function PsychedelicEffect(ctx, width, height, speed) {
+        this.ctx = ctx;
+        this.width = width;
+        this.height = height;
+        this.angle = 0;
+        this.speed = speed;
+    }
+    PsychedelicEffect.prototype.update = function () {
+        // Actualiza el ángulo para el siguiente fotograma
+        this.angle += this.speed;
+    };
+    PsychedelicEffect.prototype.draw = function (originalImage) {
+        // Crea una capa para el efecto
+        var effectCanvas = document.createElement('canvas');
+        effectCanvas.width = this.width;
+        effectCanvas.height = this.height;
+        var effectContext = effectCanvas.getContext('2d');
+        // Dibuja el patrón psicodélico en la capa del efecto
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+                var red = Math.sin(this.angle + x / 10) * 128 + 128;
+                var green = Math.sin(this.angle + y / 10) * 128 + 128;
+                var blue = Math.sin(this.angle + (x + y) / 10) * 128 + 128;
+                effectContext.fillStyle = "rgba(".concat(red, ", ").concat(green, ", ").concat(blue, ", 1)");
+                effectContext.fillRect(x, y, 1, 1);
+            }
+        }
+        // Restaura la opacidad antes de poner la capa de efecto
+        this.ctx.globalAlpha = 1;
+        // Dibuja la imagen original
+        this.ctx.drawImage(originalImage, 0, 0, this.width, this.height);
+        // Dibuja la capa del efecto con opacidad mínima
+        this.ctx.globalAlpha = 0.4;
+        this.ctx.drawImage(effectCanvas, 0, 0, this.width, this.height);
+        // Restaura la opacidad después de poner la capa de efecto
+        this.ctx.globalAlpha = 1;
+    };
+    return PsychedelicEffect;
+}());
+export { PsychedelicEffect };

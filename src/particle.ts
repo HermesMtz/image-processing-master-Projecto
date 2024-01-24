@@ -295,3 +295,58 @@ export class RotationEffect {
 }
 
 
+///efecto psicodelico
+
+
+export class PsychedelicEffect {
+  protected ctx: CanvasRenderingContext2D;
+  protected width: number;
+  protected height: number;
+  protected angle: number;
+  protected speed: number;
+
+  constructor(ctx: CanvasRenderingContext2D, width: number, height: number, speed: number) {
+    this.ctx = ctx;
+    this.width = width;
+    this.height = height;
+    this.angle = 0;
+    this.speed = speed;
+  }
+
+  public update() {
+    // Actualiza el ángulo para el siguiente fotograma
+    this.angle += this.speed;
+  }
+
+  public draw(originalImage: HTMLImageElement) {
+    // Crea una capa para el efecto
+    const effectCanvas = document.createElement('canvas');
+    effectCanvas.width = this.width;
+    effectCanvas.height = this.height;
+    const effectContext = effectCanvas.getContext('2d')!;
+
+    
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const red = Math.sin(this.angle + x / 10) * 128 + 128;
+        const green = Math.sin(this.angle + y / 10) * 128 + 128;
+        const blue = Math.sin(this.angle + (x + y) / 10) * 128 + 128;
+
+        effectContext.fillStyle = `rgba(${red}, ${green}, ${blue}, 1)`;
+        effectContext.fillRect(x, y, 1, 1);
+      }
+    }
+
+
+    this.ctx.globalAlpha = 1;
+
+  
+    this.ctx.drawImage(originalImage, 0, 0, this.width, this.height);
+
+
+    this.ctx.globalAlpha = 0.4;
+    this.ctx.drawImage(effectCanvas, 0, 0, this.width, this.height);
+
+    this.ctx.globalAlpha = 1;
+  }
+}
