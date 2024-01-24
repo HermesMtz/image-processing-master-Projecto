@@ -175,23 +175,54 @@ export class ConfettiParticle {
 }
 
 //Para el efecto de estrella
-export class StarParticle {
-  x: number;
-  y: number;
-  size: number;
-  brightness: number;
 
-  constructor(x: number, y: number, size: number, brightness: number) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.brightness = brightness;
+
+export class SuspendedStars {
+  protected ctx: CanvasRenderingContext2D;
+  protected starArray: { x: number; y: number; radius: number; brightness: number }[];
+
+  constructor(ctx: CanvasRenderingContext2D, numberOfStars: number) {
+    this.ctx = ctx;
+    this.starArray = [];
+
+    for (let i = 0; i < numberOfStars; i++) {
+      const x = Math.random() * this.ctx.canvas.width;
+      const y = Math.random() * this.ctx.canvas.height;
+      const radius = Math.random() * 2 + 1; // Radio aleatorio entre 1 y 3
+      const brightness = Math.random() * 0.5 + 0.5; // Brillo aleatorio entre 0.5 y 1
+
+      this.starArray.push({ x, y, radius, brightness });
+    }
+
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    window.addEventListener('mousemove', this.handleMouseMove);
   }
 
-  draw(context: CanvasRenderingContext2D) {
-    context.beginPath();
-    context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    context.fillStyle = `rgba(255, 255, 255, ${this.brightness})`;
-    context.fill();
+  private handleMouseMove(event: MouseEvent) {
+    for (let i = 0; i < this.starArray.length; i++) {
+      const star = this.starArray[i];
+      const dx = event.clientX - star.x;
+      const dy = event.clientY - star.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 50) {
+        // Mueve la estrella hacia el cursor si está lo suficientemente cerca
+        const angle = Math.atan2(dy, dx);
+        const speed = 2;
+        star.x += Math.cos(angle) * speed;
+        star.y += Math.sin(angle) * speed;
+      }
+    }
+  }
+
+  public draw() {
+    for (let i = 0; i < this.starArray.length; i++) {
+      const star = this.starArray[i];
+
+      this.ctx.beginPath();
+      this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+      this.ctx.fill();
+    }
   }
 }

@@ -118,19 +118,44 @@ var ConfettiParticle = /** @class */ (function () {
 }());
 export { ConfettiParticle };
 //Para el efecto de estrella
-var StarParticle = /** @class */ (function () {
-    function StarParticle(x, y, size, brightness) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.brightness = brightness;
+var SuspendedStars = /** @class */ (function () {
+    function SuspendedStars(ctx, numberOfStars) {
+        this.ctx = ctx;
+        this.starArray = [];
+        for (var i = 0; i < numberOfStars; i++) {
+            var x = Math.random() * this.ctx.canvas.width;
+            var y = Math.random() * this.ctx.canvas.height;
+            var radius = Math.random() * 2 + 1; // Radio aleatorio entre 1 y 3
+            var brightness = Math.random() * 0.5 + 0.5; // Brillo aleatorio entre 0.5 y 1
+            this.starArray.push({ x: x, y: y, radius: radius, brightness: brightness });
+        }
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        window.addEventListener('mousemove', this.handleMouseMove);
     }
-    StarParticle.prototype.draw = function (context) {
-        context.beginPath();
-        context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        context.fillStyle = "rgba(255, 255, 255, ".concat(this.brightness, ")");
-        context.fill();
+    SuspendedStars.prototype.handleMouseMove = function (event) {
+        for (var i = 0; i < this.starArray.length; i++) {
+            var star = this.starArray[i];
+            var dx = event.clientX - star.x;
+            var dy = event.clientY - star.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 50) {
+                // Mueve la estrella hacia el cursor si está lo suficientemente cerca
+                var angle = Math.atan2(dy, dx);
+                var speed = 2;
+                star.x += Math.cos(angle) * speed;
+                star.y += Math.sin(angle) * speed;
+            }
+        }
     };
-    return StarParticle;
+    SuspendedStars.prototype.draw = function () {
+        for (var i = 0; i < this.starArray.length; i++) {
+            var star = this.starArray[i];
+            this.ctx.beginPath();
+            this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = "rgba(255, 255, 255, ".concat(star.brightness, ")");
+            this.ctx.fill();
+        }
+    };
+    return SuspendedStars;
 }());
-export { StarParticle };
+export { SuspendedStars };

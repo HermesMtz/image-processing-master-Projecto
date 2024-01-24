@@ -5,7 +5,7 @@ import { Particle } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from "./canvasLocal.js";
 import { ConfettiParticle } from "./particle.js";
-import { StarParticle } from "./particle.js";
+import { SuspendedStars } from "./particle.js";
 
 let lienzo1: HTMLCanvasElement;
 let lienzo2: HTMLCanvasElement;
@@ -430,6 +430,27 @@ function Confetti() {
   initConfetti();
   animateConfetti();
 }
+
+//eFecto con mouse 
+
+let suspendedStarsEffect: SuspendedStars;
+
+function initSuspendedStarsEffect() {
+  suspendedStarsEffect = new SuspendedStars(pantalla2, 100);
+}
+
+function animateSuspendedStarsEffect() {
+  pantalla2.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+  pantalla2.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+  suspendedStarsEffect.draw();
+  requestAnimationFrame(animateSuspendedStarsEffect);
+}
+function startStars() {
+  initSuspendedStarsEffect();
+  animateSuspendedStarsEffect();
+}
+
+
 //seccion de histogramas
 function histogramas(evt: any): void {
   const imagenSal: ImageType = new ImageType(pantalla1, imgLocal.getImage());
@@ -736,3 +757,4 @@ document.getElementById("op-afin").addEventListener("click", tAfin, false);
 ///para proyecto 
 
 document.getElementById("Confetti").addEventListener('click', Confetti, false);
+document.getElementById("Stars").addEventListener('click', startStars, false);
